@@ -1,0 +1,32 @@
+pipeline {
+	agent any
+
+	stages {
+	    stage ("scm") {
+	        steps {
+	        git 'https://github.com/hellolove143/cab-booking-webapp_PROJECT.git'
+	        } 
+	    }
+	    stage ("clean package") {
+	        steps {
+	         sh 'mvn clean package'
+	         }
+	    }
+	    stage ("build image") {
+	        steps {
+	         sh 'docker build -t hellolove123/cab-booking-app:${BUILD_NUMBER} .'
+             }
+        }
+         stage ("Image scanning") {
+	        steps {
+	         sh 'trivy image hellolove123/cab-booking-app:${BUILD_NUMBER}'
+	        }
+        }
+        stage ("docker push") {
+	        steps {
+	         sh 'docker login -u hellolove123 -p Loveyougod@143'
+	         sh 'docker push hellolove123/cab-booking-app:${BUILD_NUMBER}'
+	        }
+        }
+    }
+}	
